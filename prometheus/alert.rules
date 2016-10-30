@@ -1,8 +1,16 @@
 ALERT HighLoad
   IF node_load1 > 6.0
   ANNOTATIONS {
-      summary = "Instance {{ $labels.instance }} under high load",
-      description = "{{ $labels.instance }} of job {{ $labels.job }} is under high load",
+      summary = "High Load",
+      description = "Host is under high load",
+  }
+
+ALERT HighMemoryUsage
+  IF (sum(node_memory_MemTotal) - sum(node_memory_MemFree+node_memory_Buffers+node_memory_Cached) ) / sum(node_memory_MemTotal) * 100 > 80
+  FOR 1m
+  ANNOTATIONS {
+      summary = "High Memory Usage",
+      description = "Host is running out of memory",
   }
 
 ALERT APIHighRequestLatency

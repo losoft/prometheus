@@ -147,14 +147,23 @@
         "iconColor": "rgba(255, 96, 96, 1)",
         "name": "Container Down",
         "tagKeys": "name",
-        "titleFormat": "alertname"
+        "titleFormat": "Container Down"
       },
       {
-        "name": "High Load",
         "datasource": "Prometheus",
-        "iconColor": "rgb(255, 100, 0)",
         "enable": true,
-        "expr": "ALERTS{alertname=\"HighLoad\"}"
+        "expr": "ALERTS{alertname=\"HighLoad\", alertstate=\"firing\"}",
+        "iconColor": "rgb(255, 100, 0)",
+        "name": "High Load",
+        "titleFormat": "High Load"
+      },
+      {
+        "name": "High Memory Usage",
+        "datasource": "Prometheus",
+        "iconColor": "rgb(255, 217, 0)",
+        "enable": true,
+        "titleFormat": "High Memory Usage",
+        "expr": "ALERTS{alertname=\"HighMemoryUsage\", alertstate=\"firing\"}"
       }
     ]
   },
