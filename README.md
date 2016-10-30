@@ -12,6 +12,7 @@ If you would like to change which targets should be monitored or make configurat
 Once configurations are done let's start it up. There are two ways to setup your Prometheus:
 
 1. Calling init script
+
 From the /prometheus project directory simply run the init-environment.sh script
 
     $ init-environment.sh
@@ -19,6 +20,7 @@ From the /prometheus project directory simply run the init-environment.sh script
 which automatically initializes whole environment (you can skip Post Configuration section), or 
 
 2. Manual
+
 From the /prometheus project directory run the following command:
 
     $ docker-compose up -d
