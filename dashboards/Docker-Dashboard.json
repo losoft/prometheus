@@ -154,7 +154,7 @@
           },
           "targets": [
             {
-              "expr": "{__name__=\"node_load5\"}",
+              "expr": "{__name__=\"node_load1\"}",
               "interval": "10s",
               "intervalFactor": 1,
               "legendFormat": "",
