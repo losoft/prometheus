@@ -889,7 +889,24 @@
     "list": []
   },
   "annotations": {
-    "list": []
+    "list": [
+      {
+        "datasource": "Prometheus",
+        "enable": true,
+        "expr": "ALERTS{alertname=\"ContainerDown\", alertstate=\"firing\"}",
+        "iconColor": "rgba(255, 96, 96, 1)",
+        "name": "Container Down",
+        "tagKeys": "name",
+        "titleFormat": "alertname"
+      },
+      {
+        "name": "High Load",
+        "datasource": "Prometheus",
+        "iconColor": "rgb(255, 100, 0)",
+        "enable": true,
+        "expr": "ALERTS{alertname=\"HighLoad\"}"
+      }
+    ]
   },
   "refresh": "10s",
   "schemaVersion": 12,

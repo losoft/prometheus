@@ -141,6 +141,7 @@ function setup_grafana_dashboard {
   
 	echo "Creating dashboard 'Docker Container Status' with the following containers:"
   PANELS=""
+  NAMES=""
   ID=0
   IFS=$NEWLINE
   for x in `docker ps`; do
@@ -161,14 +162,17 @@ function setup_grafana_dashboard {
     echo " - ${CONTAINER}"
     if [ -n "$PANELS" ]; then
       PANELS=$PANELS","$NEWLINE
+      NAMES=$NAMES"|"
     fi
     PANELS=$PANELS$(prepare_container_from_template ${ID} ${CONTAINER})
+    NAMES=$NAMES$CONTAINER
   done
   
   TEMP_DIR=$(mktemp -d)
   echo "$PANELS" > "${TEMP_DIR}/panels"
   cp Docker-Container-Status.json.tmpl "${TEMP_DIR}/dashboard.tmpl"
   cd ${TEMP_DIR}
+  sed -i "s/___NAMES___/$NAMES/g" dashboard.tmpl
   csplit -s dashboard.tmpl '/___PANELS___/'
   sed -i "s|___PANELS___||g" xx01
   cat xx00 panels xx01 > dashboard
