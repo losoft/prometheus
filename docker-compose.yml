@@ -14,12 +14,16 @@ services:
   prometheus:
     image: prom/prometheus
     container_name: prometheus
+    mem_limit: 3000000000
+    memswap_limit: 3000000000
     volumes:
       - ./prometheus/:/etc/prometheus/
       - prometheus_data:/prometheus
     command:
       - '-config.file=/etc/prometheus/prometheus.yml'
       - '-storage.local.path=/prometheus'
+      - '-storage.local.retention=1h0m0s'
+      - '-storage.local.memory-chunks=262144'
       - '-alertmanager.url=http://alertmanager:9093'
     expose:
       - 9090
@@ -35,6 +39,8 @@ services:
   
   node-exporter:
     image: prom/node-exporter
+    mem_limit: 1000000000
+    memswap_limit: 1000000000
     expose:
       - 9100
     networks:
@@ -53,6 +59,8 @@ services:
       
   cadvisor:
     image: google/cadvisor
+    mem_limit: 1000000000
+    memswap_limit: 1000000000
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:rw
@@ -60,11 +68,15 @@ services:
       - /var/lib/docker/:/var/lib/docker:ro
     expose:
       - 8080
+    ports:
+      - 8080:8080
     networks:
       - back-tier
   
   grafana:
     image: grafana/grafana
+    mem_limit: 1000000000
+    memswap_limit: 1000000000
     depends_on:
       - prometheus
     ports:
