@@ -7,13 +7,22 @@ volumes:
 networks:
   front-tier:
     driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.30.0.0/16
   back-tier:
     driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.31.0.0/16
 
 services:
   prometheus:
     image: prom/prometheus
     container_name: prometheus
+    restart: always
     mem_limit: 3000000000
     memswap_limit: 3000000000
     volumes:
@@ -22,7 +31,7 @@ services:
     command:
       - '-config.file=/etc/prometheus/prometheus.yml'
       - '-storage.local.path=/prometheus'
-      - '-storage.local.retention=1h0m0s'
+      - '-storage.local.retention=128h0m0s'
       - '-storage.local.memory-chunks=262144'
       - '-alertmanager.url=http://alertmanager:9093'
     expose:
@@ -39,14 +48,17 @@ services:
   
   node-exporter:
     image: prom/node-exporter
+    restart: always
     mem_limit: 1000000000
     memswap_limit: 1000000000
     expose:
       - 9100
     networks:
       - back-tier
+  
   alertmanager:
     image: prom/alertmanager
+    restart: always
     ports:
       - 9093:9093
     volumes: 
@@ -59,6 +71,7 @@ services:
       
   cadvisor:
     image: google/cadvisor
+    restart: always
     mem_limit: 1000000000
     memswap_limit: 1000000000
     volumes:
@@ -75,10 +88,13 @@ services:
   
   grafana:
     image: grafana/grafana
+    restart: always
     mem_limit: 1000000000
     memswap_limit: 1000000000
     depends_on:
       - prometheus
+    expose:
+      - 3000
     ports:
       - 3000:3000
     volumes:
