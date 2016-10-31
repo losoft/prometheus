@@ -72,7 +72,8 @@ IFS=$','
 EXCLUDES_ARRAY=(${EXCLUDES})
 unset IFS
 
-echo "Excluded Containers: ${EXCLUDES}"
+# Changing working dir
+cd -- "$(dirname -- "$0")"
 
 COOKIEJAR=$(mktemp)
 trap 'unlink ${COOKIEJAR}' EXIT
@@ -125,7 +126,7 @@ function setup_grafana_dashboard {
     ensure_grafana_dashboard "Docker-Dashboard.json"
     RET=$?
     if [ "${RET}" -ne "0" ]; then
-      echo "An error occurred"
+      error "An error occurred"
       exit 1
     fi
     
@@ -134,7 +135,7 @@ function setup_grafana_dashboard {
     ensure_grafana_dashboard "Docker-Host-And-Container-Overview.json"
     RET=$?
     if [ "${RET}" -ne "0" ]; then
-      echo "An error occurred"
+      error "An error occurred"
       exit 1
     fi
   fi
@@ -181,11 +182,9 @@ function setup_grafana_dashboard {
   RET=$?
   rm -rf $TEMP_DIR
   if [ "${RET}" -ne "0" ]; then
-    echo "An error occurred"
+    error "An error occurred"
     exit 1
   fi
-  
-  echo "Done"
 }
 
 function success {
@@ -193,18 +192,37 @@ function success {
 }
 
 function info {
-  echo "$(tput setaf 3)""$*""$(tput sgr0)"
+  echo "$(tput bold)""$*""$(tput sgr0)"
 }
 
 function error {
   echo "$(tput setaf 1)""$*""$(tput sgr0)" 1>&2
 }
 
+function watch_for_grafana {
+  if docker ps | grep -q "prometheus_grafana_1"
+  then
+    return 0
+  fi
+  return 1
+}
+
+watch_for_grafana
+RET=$?
+if [ "${RET}" -ne "0" ]; then
+  error "No Grafana seems to be running :("
+  exit 1
+fi
+
 setup_grafana_session
 RET=$?
 if [ "${RET}" -ne "0" ]; then
   exit 1
 fi
-  
+
+info "Creating dashboards"
+echo "Excluded containers: ${EXCLUDES}"
 setup_grafana_dashboard
+
+success "Done"
 

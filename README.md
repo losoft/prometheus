@@ -15,7 +15,7 @@ Once configurations are done let's start it up. There are two ways to setup your
 
 From the /prometheus project directory simply run the init-environment.sh script
 
-    $ init-environment.sh
+    $ ./init-environment.sh
 
 which automatically initializes whole environment (you can skip Post Configuration section), or 
 
