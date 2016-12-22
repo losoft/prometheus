@@ -109,6 +109,7 @@ function wait_for_grafana {
   docker-compose logs -f | while read LOGLINE
   do
     [[ "${LOGLINE}" == *"grafana"*"Server Listening"*"address="*":3000"* ]] && pkill -P $$ docker-compose && break
+    [[ "${LOGLINE}" == *"Initializing HTTP Server"*"address="*":3000"* ]] && pkill -P $$ docker-compose && break
   done
 }
 
